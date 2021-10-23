@@ -14,32 +14,33 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/organizations/{organizationId}/licenses")
 public class LicenseServiceController {
 
-    @Autowired
     private LicenseService licenseService;
 
-    @GetMapping( "/{licenseId}")
+    @Autowired
+    public void setLicenseService(LicenseService licenseService) {
+        this.licenseService = licenseService;
+    }
+
+    @PostMapping("/")
+    public void saveLicenses(@RequestBody License license) {
+        System.out.println("license: " + license.toString());
+        licenseService.saveLicense(license);
+    }
+
+    @GetMapping("/{licenseId}")
     public License getLicenses(@PathVariable("organizationId") String organizationId,
                                @PathVariable("licenseId") String licenseId) {
-        return new License()
-                .withId(licenseId)
-                .withOrganizationId(organizationId)
-                .withProductName("Teleco")
-                .withLicenseType("Seat");
+        return licenseService.getLicense(organizationId, licenseId);
     }
 
     @PutMapping("/{licenseId}")
-    public String updateLicenses(@PathVariable("licenseId") String licenseId) {
-        return String.format("This is the put");
-    }
-
-    @PostMapping("/{licenseId}")
-    public String saveLicenses(@PathVariable("licenseId") String licenseId) {
-        return String.format("This is the post");
+    public void updateLicenses(@RequestBody License license) {
+        licenseService.updateLicense(license);
     }
 
     @DeleteMapping("/{licenseId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String deleteLicenses(@PathVariable("licenseId") String licenseId) {
-        return String.format("This is the delete");
+    public void deleteLicenses(@PathVariable("licenseId") String licenseId) {
+        licenseService.deleteLicense(licenseId);
     }
 }

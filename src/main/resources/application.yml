@@ -1,0 +1,14 @@
+spring:
+  application:
+    # 应用程序的名称必须直接映射到Spring Cloud配置服务器中的config目录的名称
+    name: licensingservice
+  profiles:
+    active: default
+  config:
+    # 指定Spring Cloud Config服务器的位置
+    import: "optional:configserver:http://configurationservice:8888"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

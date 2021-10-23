@@ -1,6 +1,9 @@
 package com.denglitong.licenses.service;
 
+import com.denglitong.licenses.config.ServiceConfig;
 import com.denglitong.licenses.model.License;
+import com.denglitong.licenses.repository.LicenseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -12,23 +15,35 @@ import java.util.UUID;
 @Service
 public class LicenseService {
 
-    public License getLicense(String licenseId) {
-        return new License()
-                .withId(licenseId)
-                .withOrganizationId(UUID.randomUUID().toString())
-                .withProductName("Test Product Name")
-                .withLicenseType("PerSeat");
+    private LicenseRepository licenseRepository;
+
+    private ServiceConfig serviceConfig;
+
+    @Autowired
+    public void setLicenseRepository(LicenseRepository licenseRepository) {
+        this.licenseRepository = licenseRepository;
+    }
+
+    @Autowired
+    public void setServiceConfig(ServiceConfig serviceConfig) {
+        this.serviceConfig = serviceConfig;
+    }
+
+    public License getLicense(String organizationId, String licenseId) {
+        License license = licenseRepository.findByOrganizationIdAndAndLicenseId(organizationId, licenseId);
+        return license.withComment(serviceConfig.getExampleProperty());
     }
 
     public void saveLicense(License license) {
-
+        license.withLicenseId(UUID.randomUUID().toString());
+        licenseRepository.save(license);
     }
 
     public void updateLicense(License license) {
-
+        licenseRepository.save(license);
     }
 
-    public void deleteLicense(License license) {
-
+    public void deleteLicense(String licenseId) {
+        licenseRepository.deleteById(licenseId);
     }
 }
