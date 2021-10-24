@@ -12,3 +12,14 @@ management:
     web:
       exposure:
         include: "*"
+eureka:
+  instance:
+    # 注册服务的IP而不是服务名称
+    prefer-ip-address: true
+  client:
+    # 向Eureka注册服务
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      # Eureka服务的位置
+      defaultZone: http://eurekaservice:8761/eureka/
