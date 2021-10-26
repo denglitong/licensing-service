@@ -2,9 +2,13 @@ package com.denglitong.licenses.controller;
 
 import com.denglitong.licenses.model.License;
 import com.denglitong.licenses.service.LicenseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author litong.deng@foxmail.com
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/organizations/{organizationId}/licenses")
 public class LicenseServiceController {
 
+    private static final Logger logger = LoggerFactory.getLogger(LicenseServiceController.class);
+
     private LicenseService licenseService;
 
     @Autowired
@@ -21,9 +27,15 @@ public class LicenseServiceController {
         this.licenseService = licenseService;
     }
 
-    @PostMapping("/")
+    @PostMapping
     public void saveLicenses(@RequestBody License license) {
         licenseService.saveLicense(license);
+    }
+
+    @GetMapping
+    public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
+        logger.debug("LicenseServiceController.getLicenses");
+        return licenseService.getLicensesByOrg(organizationId);
     }
 
     @GetMapping("/{licenseId}")
