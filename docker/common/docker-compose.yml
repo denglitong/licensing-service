@@ -18,16 +18,6 @@ services:
       - "8888:8888"
     environment:
       ENCRYPT_KEY: "IMSYMMETRIC"
-  licensingservice:
-    image: denglitong/licensing-service:chapter2
-    ports:
-      - "8080:8080"
-    environment:
-      PROFILE: "default"
-      CONFIGSERVER_URI: "http://configurationservice:8888"
-      CONFIGSERVER_PORT: "8888"
-      DATABASESERVER_PORT: "5432"
-      ENCRYPT_KEY: "IMSYMMETRIC"
   organizationservice:
     image: denglitong/organization-service:chapter4
     ports:
@@ -51,6 +41,16 @@ services:
       CONFIGSERVER_URI: "http://configurationservice:8888"
       EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
       EUREKASERVER_PORT: "8761"
+      CONFIGSERVER_PORT: "8888"
+      DATABASESERVER_PORT: "5432"
+      ENCRYPT_KEY: "IMSYMMETRIC"
+  licensingservice:
+    image: denglitong/licensing-service:chapter2
+    ports:
+      - "8080:8080"
+    environment:
+      PROFILE: "default"
+      CONFIGSERVER_URI: "http://configurationservice:8888"
       CONFIGSERVER_PORT: "8888"
       DATABASESERVER_PORT: "5432"
       ENCRYPT_KEY: "IMSYMMETRIC"

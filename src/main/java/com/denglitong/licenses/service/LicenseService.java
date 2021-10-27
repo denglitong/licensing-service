@@ -7,6 +7,7 @@ import com.denglitong.licenses.config.ServiceConfig;
 import com.denglitong.licenses.model.License;
 import com.denglitong.licenses.model.Organization;
 import com.denglitong.licenses.repository.LicenseRepository;
+import com.denglitong.licenses.utils.UserContextHolder;
 import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
@@ -137,6 +138,8 @@ public class LicenseService {
     /**
      * Netflix推荐的自定义线程池大小：
      * 服务健康状态下每秒支撑的最大请求数 * 第99百分位延迟时间（秒）+ 用于缓冲的少量额外线程
+     * <p>
+     * 默认情况下Hystrix采用THREAD的隔离策略，父线程的context传递不到Hystrix注解标注开启的子线程里
      *
      * @param organizationId
      * @return
@@ -158,7 +161,7 @@ public class LicenseService {
             fallbackMethod = "buildFallbackLicenseList"
     )
     public List<License> getLicensesByOrg(String organizationId) {
-        logger.debug("LicenseService.getLicensesByOrg");
+        logger.info("LicenseService.getLicensesByOrg correlation id: {}", UserContextHolder.getContext().getCorrelationId());
         randomlyRunLong();
         return licenseRepository.findByOrganizationId(organizationId);
     }

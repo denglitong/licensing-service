@@ -2,6 +2,7 @@ package com.denglitong.licenses.controller;
 
 import com.denglitong.licenses.model.License;
 import com.denglitong.licenses.service.LicenseService;
+import com.denglitong.licenses.utils.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,8 @@ public class LicenseServiceController {
 
     @GetMapping
     public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
-        logger.debug("LicenseServiceController.getLicenses");
+        logger.info("LicenseServiceController.getLicenses Correlation id: {}", UserContextHolder.getContext()
+                .getCorrelationId());
         return licenseService.getLicensesByOrg(organizationId);
     }
 
