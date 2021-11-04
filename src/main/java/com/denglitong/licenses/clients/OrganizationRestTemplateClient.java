@@ -23,7 +23,9 @@ public class OrganizationRestTemplateClient {
 
     public Organization getOrganization(String organizationId) {
         ResponseEntity<Organization> restExchange = restTemplate.exchange(
-                "http://organizationservice/v1/organizations/{organizationId}",
+                // "http://organizationservice/v1/organizations/{organizationId}",
+                // 使用Zuul服务网关代理请求
+                "http://zuulservice/api/organizationservice/v1/organizations/{organizationId}",
                 HttpMethod.GET, null, Organization.class, organizationId);
         return restExchange.getBody();
     }

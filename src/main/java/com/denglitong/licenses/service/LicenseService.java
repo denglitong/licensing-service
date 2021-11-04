@@ -3,7 +3,7 @@ package com.denglitong.licenses.service;
 import com.denglitong.licenses.clients.OrganizationDiscoveryClient;
 import com.denglitong.licenses.clients.OrganizationFeignClient;
 import com.denglitong.licenses.clients.OrganizationRestTemplateClient;
-import com.denglitong.licenses.config.ServiceConfig;
+import com.denglitong.licenses.config.AppConfig;
 import com.denglitong.licenses.model.License;
 import com.denglitong.licenses.model.Organization;
 import com.denglitong.licenses.repository.LicenseRepository;
@@ -39,7 +39,7 @@ public class LicenseService {
 
     private LicenseRepository licenseRepository;
 
-    private ServiceConfig serviceConfig;
+    private AppConfig appConfig;
 
     private OrganizationRestTemplateClient organizationRestClient;
 
@@ -76,8 +76,8 @@ public class LicenseService {
     }
 
     @Autowired
-    public void setServiceConfig(ServiceConfig serviceConfig) {
-        this.serviceConfig = serviceConfig;
+    public void setAppConfig(AppConfig appConfig) {
+        this.appConfig = appConfig;
     }
 
     @Autowired
@@ -97,7 +97,7 @@ public class LicenseService {
 
     public License getLicense(String organizationId, String licenseId) {
         License license = licenseRepository.findByOrganizationIdAndAndLicenseId(organizationId, licenseId);
-        return license.withComment(serviceConfig.getExampleProperty());
+        return license.withComment(appConfig.getExampleProperty());
     }
 
     /**
@@ -114,7 +114,7 @@ public class LicenseService {
                 .withContactName(org.getContactName())
                 .withContactEmail(org.getContactEmail())
                 .withContactPhone(org.getContactPhone())
-                .withComment(serviceConfig.getExampleProperty());
+                .withComment(appConfig.getExampleProperty());
     }
 
     private void randomlyRunLong() {
