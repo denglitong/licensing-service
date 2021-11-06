@@ -23,3 +23,7 @@ eureka:
     service-url:
       # Eureka服务的位置
       defaultZone: http://eurekaservice:8761/eureka/
+security:
+  oauth2:
+    resource:
+      userInfoUri: http://authenticationservice:8901/auth/user

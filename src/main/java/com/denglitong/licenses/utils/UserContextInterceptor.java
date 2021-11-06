@@ -10,6 +10,9 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 
+import static com.denglitong.licenses.utils.UserContext.*;
+import static com.denglitong.licenses.utils.UserContextHolder.getContext;
+
 public class UserContextInterceptor implements ClientHttpRequestInterceptor {
     private static final Logger logger = LoggerFactory.getLogger(UserContextInterceptor.class);
 
@@ -19,9 +22,11 @@ public class UserContextInterceptor implements ClientHttpRequestInterceptor {
             throws IOException {
 
         HttpHeaders headers = request.getHeaders();
-        headers.add(UserContext.CORRELATION_ID, UserContextHolder.getContext().getCorrelationId());
-        headers.add(UserContext.AUTH_TOKEN, UserContextHolder.getContext().getAuthToken());
+        headers.add(CORRELATION_ID, getContext().getCorrelationId());
+        headers.add(AUTH_TOKEN, getContext().getAuthToken());
+        headers.add(AUTHORIZATION, getContext().getAuthorization());
 
+        // set header and go through down stream services
         return execution.execute(request, body);
     }
 }
