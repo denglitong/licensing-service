@@ -14,22 +14,22 @@ public class AppConfig {
     @Value("${example.property}")
     private String exampleProperty;
 
-    @Value("${spring.datasource.username}")
-    private String dataSourceUserName;
+    @Value("${redis.server:''}")
+    private String redisServer;
 
-    @Value("${spring.datasource.password}")
-    private String dataSourcePassword;
+    @Value("${redis.port:''}")
+    private String redisPort;
 
     public String getExampleProperty() {
         return exampleProperty;
     }
 
-    public String getDataSourceUserName() {
-        return dataSourceUserName;
+    public String getRedisServer() {
+        return redisServer;
     }
 
-    public String getDataSourcePassword() {
-        return dataSourcePassword;
+    public Integer getRedisPort() {
+        return Integer.valueOf(redisPort);
     }
 
     @Override

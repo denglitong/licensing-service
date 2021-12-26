@@ -1,22 +1,26 @@
 package com.denglitong.licenses.model;
 
+import java.io.Serializable;
+
 /**
  * @author litong.deng@foxmail.com
  * @date 2021/10/22
  */
-public class Organization {
-    String id;
+public class Organization implements Serializable {
+    private static final long serialVersionUID = 8298128573107252365L;
+
+    String organizationId;
     String name;
     String contactName;
     String contactEmail;
     String contactPhone;
 
-    public String getId() {
-        return id;
+    public String getOrganizationId() {
+        return organizationId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getName() {

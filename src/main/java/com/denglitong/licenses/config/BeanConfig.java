@@ -1,8 +1,12 @@
 package com.denglitong.licenses.config;
 
+import com.denglitong.licenses.model.Organization;
 import com.denglitong.licenses.utils.UserContextInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,6 +19,13 @@ import java.util.List;
  */
 @Component
 public class BeanConfig {
+
+    private AppConfig appConfig;
+
+    @Autowired
+    public void setAppConfig(AppConfig appConfig) {
+        this.appConfig = appConfig;
+    }
 
     /**
      * LoadBalanced 注解告诉Spring Cloud创建一个支持Ribbon的RestTemplate类
@@ -33,6 +44,21 @@ public class BeanConfig {
             template.setInterceptors(interceptors);
         }
 
+        return template;
+    }
+
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory();
+        jedisConnFactory.setHostName(appConfig.getRedisServer());
+        jedisConnFactory.setPort(appConfig.getRedisPort());
+        return jedisConnFactory;
+    }
+
+    @Bean
+    public RedisTemplate<String, Organization> redisTemplate(@Autowired JedisConnectionFactory jedisConnFactory) {
+        RedisTemplate<String, Organization> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnFactory);
         return template;
     }
 }

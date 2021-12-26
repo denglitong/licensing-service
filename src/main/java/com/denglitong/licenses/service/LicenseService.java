@@ -49,7 +49,7 @@ public class LicenseService {
 
     private Organization retrieveOrgInfo(String organizationId, String clientType) {
         logger.debug("LicenseService.retrieveOrgInfo");
-        randomlyRunLong();
+        // randomlyRunLong();
         Organization organization = null;
         switch (clientType) {
             case "feign":

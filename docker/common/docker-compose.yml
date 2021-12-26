@@ -8,6 +8,29 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "p0stgr@s"
       POSTGRES_DB: "eagle_eye_local"
+  zookeeperservice:
+    image: zookeeper
+    container_name: zookeeperservice
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - 2181:2181
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+  kafkaservice:
+    image: bitnami/kafka
+    container_name: kafkaservice
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeperservice:2181"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://${KAFKA_HOST}:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+    ports:
+      - 9092:9092
+    links:
+      - zookeeperservice
   eurekaservice:
     image: denglitong/eureka-service:chapter4
     ports:
@@ -17,6 +40,34 @@ services:
     ports:
       - "8888:8888"
     environment:
+      EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
+      EUREKASERVER_PORT: "8761"
+      ENCRYPT_KEY: "IMSYMMETRIC"
+  zuulservice:
+    image: denglitong/zuul-service:chapter6
+    ports:
+      - "5555:5555"
+    environment:
+      PROFILE: "default"
+      SERVER_PORT: "5555"
+      EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
+      CONFIGSERVER_URI: "http://configurationservice:8888"
+      EUREKASERVER_PORT: "8761"
+      CONFIGSERVER_PORT: "8888"
+      DATABASESERVER_PORT: "5432"
+      ENCRYPT_KEY: "IMSYMMETRIC"
+  authenticationservice:
+    image: denglitong/authentication-service:chapter7
+    ports:
+      - "8901:8901"
+    environment:
+      PROFILE: "default"
+      SERVER_PORT: "8901"
+      DATABASE_PORT: "5432"
+      CONFIGSERVER_PORT: "8888"
+      EUREKASERVER_PORT: "8761"
+      CONFIGSERVER_URI: "http://configurationservice:8888"
+      EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
       ENCRYPT_KEY: "IMSYMMETRIC"
   organizationservice:
     image: denglitong/organization-service:chapter4
@@ -25,24 +76,17 @@ services:
     environment:
       PROFILE: "default"
       SERVER_PORT: "8085"
-      CONFIGSERVER_URI: "http://configurationservice:8888"
       EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
+      CONFIGSERVER_URI: "http://configurationservice:8888"
+      AUTHSERVER_URI: "http://authenticationservice:8901/auth/user"
+      KAFKASERVER_URI: "kafkaservice"
+      ZKSERVER_URI: "zookeeperservice"
+      DATABASESERVER_PORT: "5432"
       EUREKASERVER_PORT: "8761"
       CONFIGSERVER_PORT: "8888"
-      DATABASESERVER_PORT: "5432"
-      ENCRYPT_KEY: "IMSYMMETRIC"
-  organizationservice2:
-    image: denglitong/organization-service:chapter4
-    ports:
-      - "8086:8086"
-    environment:
-      PROFILE: "default"
-      SERVER_PORT: "8085"
-      CONFIGSERVER_URI: "http://configurationservice:8888"
-      EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
-      EUREKASERVER_PORT: "8761"
-      CONFIGSERVER_PORT: "8888"
-      DATABASESERVER_PORT: "5432"
+      ZUULSERVER_PORT: "5555"
+      KAFKASERVER_PORT: "9092"
+      ZOOKEEPERSERVER_PORT: "2181"
       ENCRYPT_KEY: "IMSYMMETRIC"
   licensingservice:
     image: denglitong/licensing-service:chapter2
@@ -50,7 +94,17 @@ services:
       - "8080:8080"
     environment:
       PROFILE: "default"
+      SERVER_PORT: "8080"
+      EUREKASERVER_URI: "http://eurekaservice:8761/eureka/"
       CONFIGSERVER_URI: "http://configurationservice:8888"
-      CONFIGSERVER_PORT: "8888"
+      AUTHSERVER_URI: "http://authenticationservice:8901/auth/user"
+      KAFKASERVER_URI: "kafkaservice"
+      ZKSERVER_URI: "zookeeperservice"
       DATABASESERVER_PORT: "5432"
+      EUREKASERVER_PORT: "8761"
+      CONFIGSERVER_PORT: "8888"
+      ZUULSERVER_PORT: "5555"
+      KAFKASERVER_PORT: "9092"
+      ZOOKEEPERSERVER_PORT: "2181"
+      REDIS_PORT: "6379"
       ENCRYPT_KEY: "IMSYMMETRIC"

@@ -7,6 +7,25 @@ spring:
   config:
     # 指定Spring Cloud Config服务器的位置
     import: "optional:configserver:http://configurationservice:8888"
+  cloud:
+    stream:
+      bindings:
+        # input是通道名称，映射到代码中@StreamListener注解属性值
+        #input:
+        #  destination: org_change_topic
+        #  content-type: application/json
+        #  group: licensingGroup
+        # inboundOrgChanges是通道名称，映射到代码中@StreamListener注解属性值
+        inboundOrgChanges:
+          destination: org_change_topic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          zkNodes: localhost
+          brokers: localhost
+          # 副本因子，默认为-1，必须设置值
+          replication-factor: 1
 management:
   endpoints:
     web:
